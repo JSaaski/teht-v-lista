@@ -1,10 +1,14 @@
 import { pool } from '../helper/db.js';
 import { Router } from 'express';
-import { emptyOrRows } from '../helper/utils.js';
+//import { emptyOrRows } from '../helper/utils.js';
 import { auth } from '../helper/auth.js';
+import { getTasks, postTask } from "../controllers/TaskController.js"
 
 const router = Router();
 
+router.get('/', getTasks)
+
+/*
 router.get('/',(req,res,next) => {
     pool.query('SELECT * FROM task', (error, result) => {
         if (error) {
@@ -12,8 +16,11 @@ router.get('/',(req,res,next) => {
         }
         return res.status(200).json(emptyOrRows(result));
     })
-})
+}) 
+*/
 
+router.post('/create', postTask)
+/*
 router.post('/create',auth,(req,res,next) => {
     
     pool.query('INSERT INTO task (description) VALUES ($1) returning *', 
@@ -26,7 +33,7 @@ router.post('/create',auth,(req,res,next) => {
         }
     )
 })
-
+*/
 router.delete('/delete/:id',auth,(req,res,next) => {
     const id = parseInt(req.params.id);
     pool.query('DELETE FROM task where id = $1',

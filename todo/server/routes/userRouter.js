@@ -2,11 +2,12 @@ import { pool } from '../helper/db.js';
 import { Router } from 'express';
 import { hash,compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { postLogin, postRegistration } from '../controllers/userController.js';
 const { sign } = jwt;
 
 const router = Router();
 
-router.post('/register',(req,res,next) => {
+/*router.post('/register',(req,res,next) => {
     hash(req.body.password,10,(error,hashedPassword) => {
         if (error) next(error);
         try {
@@ -22,7 +23,10 @@ router.post('/register',(req,res,next) => {
             return next(error);
         }
     })
-})
+}) */
+
+router.post('/register', postRegistration)
+//router.post('/login', postLogin)
 
 router.post('/login',(req,res,next) => {
     const invalid_message = "Invalid credentials."
@@ -31,7 +35,7 @@ router.post('/login',(req,res,next) => {
             [req.body.email],
             (error,result) => {
                 if (error) return next(error);
-                if (result.rowCount === 0) return netxt(new Error(invalid_message));
+                if (result.rowCount === 0) return next(new Error(invalid_message));
                 compare(req.body.password,result.rows[0].password,(error,match) => {
                     if (error) return next(error);
                     if (!match) return next(new Error(invalid_message));
